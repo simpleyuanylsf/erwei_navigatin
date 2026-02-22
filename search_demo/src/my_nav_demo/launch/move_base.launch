@@ -1,0 +1,22 @@
+<launch>
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+        <rosparam file="$(find my_drone_nav)/params/move_base_params.yaml" command="load"/>
+        
+        <rosparam file="$(find my_drone_nav)/params/costmap_common_params.yaml" command="load" ns="global_costmap"/>
+        <rosparam file="$(find my_drone_nav)/params/costmap_common_params.yaml" command="load" ns="local_costmap"/>
+        
+        <rosparam file="$(find my_drone_nav)/params/local_costmap_params.yaml" command="load"/>
+        <rosparam file="$(find my_drone_nav)/params/global_costmap_params.yaml" command="load"/>
+        
+        <rosparam file="$(find my_drone_nav)/params/dwa_local_planner_params.yaml" command="load"/>
+
+        <remap from="odom" to="/Odometry"/> 
+        <remap from="cmd_vel" to="/cmd_vel"/> 
+    </node> 
+    <node pkg="tf2_ros" type="static_transform_publisher" name="map_to_camera_init" 
+          args="0 0 0 0 0 0 map camera_init"/>
+
+    <node pkg="tf2_ros" type="static_transform_publisher" name="body_to_base_link" 
+          args="0 0 0 0 0 0 body base_link"/>
+
+</launch>

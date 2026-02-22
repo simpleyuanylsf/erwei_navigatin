@@ -1,0 +1,48 @@
+<launch>
+    <include file="$(find lio_to_mavros)/launch/lio_to_mavros.launch"/>
+
+
+    <arg name="cloud_in" default="/cloud_registered"/>
+    <arg name="scan_topic" default="/scan"/>
+
+    <arg name="base_frame" default="body"/>
+    <arg name="odom_frame" default="camera_init"/>
+
+
+    <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
+        
+        <remap from="cloud_in" to="$(arg cloud_in)"/>
+        <remap from="scan" to="$(arg scan_topic)"/>
+        
+        <rosparam>
+            transform_tolerance: 0.05
+            
+            # === 高度过滤 (相对于 body 坐标系) ===
+            # 截取机身高度上下 20cm 范围内的障碍物
+            # 如果设为 0.5你会看不见正前方的墙！
+            min_height: -0.2
+            max_height: 0.2
+
+            # === 角度与距离 ===
+            angle_min: -3.1415926
+            angle_max: 3.1415926
+            angle_increment: 0.0087 # 0.5度分辨率
+            scan_time: 0.1
+            
+            # === 距离限制 ===
+            range_min: 0.45
+            # 建议改小，防止低头时扫到远处地面导致急刹车
+            range_max: 8.0  
+            
+            use_inf: true
+            concurrency_level: 1
+        </rosparam>
+        
+        <param name="target_frame" value="$(arg base_frame)"/>
+    </node>
+
+    <include file="$(find my_drone_nav)/launch/move_base.launch"/>
+
+
+    
+</launch>

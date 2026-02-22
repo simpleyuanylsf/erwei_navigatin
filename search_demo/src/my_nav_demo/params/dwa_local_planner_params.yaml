@@ -1,0 +1,53 @@
+DWAPlannerROS:
+
+# === 机器人配置参数 (Robot Configuration Parameters) ===
+  # 加速度限制 (无人机加速很快，可以设大点，但为了稳，别太激进)
+  acc_lim_x: 0.7
+  acc_lim_y: 0.7  # 【关键】必须大于0，否则会被当成两轮差速车
+  acc_lim_theta: 1.0
+
+  # 速度限制
+  max_vel_trans: 0.4  # 整体最大移动速度
+  min_vel_trans: 0.05 # 最小移动速度 (小于这个就算停止)
+
+  max_vel_x: 0.25      # 前进最大速度 (室内设慢点)
+  min_vel_x: -0.25     # 【关键】允许倒车！无人机不需要掉头就能后退
+
+  max_vel_y: 0.25      # 【关键】允许横移最大速度
+  min_vel_y: -0.25     # 允许向右横移
+
+  max_vel_theta: 1.0  # 最大旋转速度 (rad/s)
+  min_vel_theta: 0.2  # 最小旋转速度
+
+# === 目标容差 (Goal Tolerance Parameters) ===
+  yaw_goal_tolerance: 0.15  # 到达目标时，角度允许误差 (约6度)
+  xy_goal_tolerance: 0.15   # 到达目标时，距离允许误差 10cm
+  latch_xy_goal_tolerance: false # 如果设为true，一旦到达过一次，就算被挤开了也算到达
+
+# === 前向模拟参数 (Forward Simulation Parameters) ===
+  sim_time: 1.5       # 向前模拟 1.5 秒的轨迹。太小会撞，太大会卡。
+  vx_samples: 20      # X轴速度采样数量
+  vy_samples: 10      # 【关键】Y轴采样！设为0就是普通小车，设为>0就是全向无人机
+  vth_samples: 40     # 旋转采样数量
+  controller_frequency: 10.0 # 发送指令频率
+
+# === 轨迹评分 (Trajectory Scoring Parameters) ===
+  # 评分公式 = path_distance_bias * (距离全局路径) + goal_distance_bias * (距离目标点) + occdist_scale * (障碍物距离)
+  
+  path_distance_bias: 32.0 # 贴合全局路径的权重 (高一点会让它乖乖走绿线)
+  goal_distance_bias: 20.0 # 接近目标的权重
+  occdist_scale: 0.05      # 避障权重 (设太大它会因为怕撞墙而不敢动)
+  
+  max_vel_x: 0.8  # 这是规划器认为的最大速度
+  max_vel_y: 0.8
+  
+  forward_point_distance: 0.325 # 评分点在机器人前方的距离
+  stop_time_buffer: 0.2    # 停车预留时间
+  scaling_speed: 0.25      # 缩放速度
+  max_scaling_factor: 0.2  # 最大缩放因子
+
+# === 震荡抑制 (Oscillation Prevention Parameters) ===
+  oscillation_reset_dist: 0.05 # 如果来回乱晃超过0.05米，重置震荡标志
+
+# === 全向机器人设置 ===
+  holonomic_robot: true   # 【绝对关键】告诉DWA我是全向移动的！

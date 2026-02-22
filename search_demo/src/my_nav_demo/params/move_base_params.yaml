@@ -1,0 +1,17 @@
+# 选择 DWA 作为局部规划器
+base_local_planner: "dwa_local_planner/DWAPlannerROS"
+# 全局规划器用默认的 global_planner 即可
+base_global_planner: "global_planner/GlobalPlanner"
+
+# 频率设置
+controller_frequency: 10.0 # 向下发送速度指令的频率
+planner_frequency: 2.0     # 全局路径重新规划的频率 (2秒一次够了)
+
+# 故障恢复 (如果卡住了怎么办)
+recovery_behavior_enabled: true
+clearing_rotation_allowed: true # 允许原地旋转来扫描障碍物
+
+# 超时设置
+planner_patience: 5.0
+controller_patience: 5.0
+shutdown_costmaps: false

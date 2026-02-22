@@ -1,0 +1,23 @@
+<launch>
+    <arg name="flight_height" default="1.0" /> 
+    <arg name="max_vel_z" default="0.6" />    
+    <arg name="max_vel_xy" default="0.8" />    
+    <arg name="max_yaw" default="1.0" />        
+
+    <node pkg="my_drone_nav" type="cmd_vel_bridge_node" name="cmd_vel_bridge" output="screen">
+        
+        <param name="target_height" value="$(arg flight_height)" />
+        
+        <param name="kp_z" value="1.0" />
+        
+        <param name="max_z_vel" value="$(arg max_vel_z)" />
+
+        <param name="max_xy_vel" value="$(arg max_vel_xy)" />
+
+        <param name="max_yaw_rate" value="$(arg max_yaw)" />
+
+        <remap from="/cmd_vel" to="/cmd_vel" />
+        <remap from="/mavros/local_position/odom" to="/mavros/local_position/odom" />
+
+    </node>
+</launch>

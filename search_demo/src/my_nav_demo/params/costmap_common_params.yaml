@@ -1,0 +1,25 @@
+# 障碍物层通用配置
+obstacle_layer:
+  enabled: true
+  obstacle_range: 5.0  # 5米内的障碍物会标记在地图上
+  raytrace_range: 8.0  # 8米内的空间会被清除（认为是空旷的）
+  
+  # === 传感器源 ===
+  # 必须确保这里填的是 pointcloud_to_laserscan 输出的 /scan
+  observation_sources: scan_sensor
+  scan_sensor: {
+    data_type: LaserScan, 
+    topic: /scan, 
+    marking: true, 
+    clearing: true,
+    # 这里的 min/max height 只是为了防止异常数据，
+    # 真正的切片工作已经在 pointcloud_to_laserscan 节点做完了
+    min_obstacle_height: -2.0, 
+    max_obstacle_height: 2.0
+  }
+
+# 膨胀层通用配置 (让障碍物变胖，防止撞击)
+inflation_layer:
+  enabled: true
+  cost_scaling_factor: 5.0  # 越大，膨胀层越陡峭（越靠近障碍物代价越高）
+  inflation_radius: 0.6     # 膨胀半径 (至少要大于飞机半径)

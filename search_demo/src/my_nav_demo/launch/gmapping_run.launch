@@ -1,0 +1,110 @@
+<launch>
+    <arg name="cloud_in" default="/cloud_registered"/>
+    <arg name="scan_topic" default="/scan"/>
+
+    <arg name="base_frame" default="body"/>
+    <arg name="odom_frame" default="camera_init"/>
+
+
+    <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
+        
+        <remap from="cloud_in" to="$(arg cloud_in)"/>
+        <remap from="scan" to="$(arg scan_topic)"/>
+        
+        <rosparam>
+            transform_tolerance: 0.01
+            
+            # === 高度过滤 (核心) ===
+            min_height: 0.5
+            max_height: 1.5
+
+            # === 角度与距离 ===
+            angle_min: -3.1415926
+            angle_max: 3.1415926
+            angle_increment: 0.0087
+            scan_time: 0.1
+            range_min: 0.45
+            range_max: 20.0
+            use_inf: true
+            concurrency_level: 1
+        </rosparam>
+        
+        <param name="target_frame" value="$(arg base_frame)"/>
+    </node>
+
+
+    <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
+        
+        <remap from="scan" to="$(arg scan_topic)"/>
+
+        <param name="base_frame" value="$(arg base_frame)"/>
+        <param name="odom_frame" value="$(arg odom_frame)"/>
+        <param name="map_frame"  value="map"/>
+
+        <param name="map_update_interval" value="0.5"/>
+        <param name="delta" value="0.05"/>
+        
+        <param name="srr" value="0.01"/>
+        <param name="srt" value="0.02"/>
+        <param name="str" value="0.01"/>
+        <param name="stt" value="0.02"/>
+
+        <param name="minimumScore" value="200"/>
+
+        <param name="linearUpdate" value="0.1"/>
+        <param name="angularUpdate" value="0.1"/>
+        <param name="maxUrange" value="10.0"/>
+        <param name="sigma" value="0.05"/>
+        <param name="kernelSize" value="1"/>
+        <param name="lstep" value="0.05"/>
+        <param name="astep" value="0.05"/>
+        <param name="iterations" value="5"/>
+        <param name="lsigma" value="0.075"/>
+        <param name="ogain" value="3.0"/>
+        
+        <param name="particles" value="30"/>
+        
+        <param name="xmin" value="-10.0"/>
+        <param name="ymin" value="-10.0"/>
+        <param name="xmax" value="10.0"/>
+        <param name="ymax" value="10.0"/>
+    </node>
+
+</launch>
+<!-- <launch>
+    <arg name="scan_topic" default="/scan" />
+    
+    <arg name="base_frame" default="body"/>
+    <arg name="odom_frame" default="camera_init"/>
+
+    <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen">
+        
+        <remap from="scan" to="$(arg scan_topic)"/>
+
+        <param name="base_frame" value="$(arg base_frame)"/>
+        <param name="odom_frame" value="$(arg odom_frame)"/>
+        <param name="map_frame"  value="map"/>
+
+        <param name="map_update_interval" value="1.0"/> <param name="delta" value="0.05"/>              <param name="srr" value="0.01"/>
+        <param name="srt" value="0.02"/>
+        <param name="str" value="0.01"/>
+        <param name="stt" value="0.02"/>
+
+        <param name="minimumScore" value="200"/>
+
+        <param name="linearUpdate" value="0.2"/>  <param name="angularUpdate" value="0.1"/> <param name="maxUrange" value="10.0"/> <param name="sigma" value="0.05"/>
+        <param name="kernelSize" value="1"/>
+        <param name="lstep" value="0.05"/>
+        <param name="astep" value="0.05"/>
+        <param name="iterations" value="5"/>
+        <param name="lsigma" value="0.075"/>
+        <param name="ogain" value="3.0"/>
+        
+        <param name="particles" value="30"/>
+        
+        <param name="xmin" value="-10.0"/>
+        <param name="ymin" value="-10.0"/>
+        <param name="xmax" value="10.0"/>
+        <param name="ymax" value="10.0"/>
+    </node>
+</launch> -->

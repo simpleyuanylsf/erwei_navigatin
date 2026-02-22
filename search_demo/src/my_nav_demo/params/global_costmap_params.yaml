@@ -1,0 +1,24 @@
+global_costmap:
+  # 坐标系设置 (Fast-LIO 的世界系通常是 camera_init)
+  global_frame: map
+  robot_base_frame: base_link
+  
+  update_frequency: 1.0
+  publish_frequency: 1.0
+  transform_tolerance: 0.5
+
+  # === 核心修改 ===
+  # 必须设为 true，这意味着地图会跟随飞机移动，始终保持飞机在中心
+  # 这样你不需要静态地图也能导航
+  rolling_window: true
+  
+  # 定义这个移动地图的大小 (米)
+  width: 50.0
+  height: 50.0
+  resolution: 0.1
+
+  # === 插件配置 (Plugins) ===
+  # 这里不加 StaticLayer，只加障碍物层和膨胀层
+  plugins:
+    - {name: obstacle_layer, type: "costmap_2d::ObstacleLayer"}
+    - {name: inflation_layer, type: "costmap_2d::InflationLayer"}

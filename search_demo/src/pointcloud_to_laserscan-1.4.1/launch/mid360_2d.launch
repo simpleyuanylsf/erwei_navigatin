@@ -1,0 +1,37 @@
+<launch>
+    <arg name="cloud_in" default="/cloud_registered"/>
+
+    <arg name="target_frame" default="body"/>
+
+    <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
+        
+        <remap from="cloud_in" to="$(arg cloud_in)"/>
+        
+        <rosparam>
+            # 目标坐标系 (必须在 TF 树中存在)
+            target_frame: body
+            transform_tolerance: 0.01
+
+            # === 高度过滤 (核心参数) ===
+            # 将 0.5m 到 1.5m 之间的点云压扁成 2D 激光
+            # 这样可以完美过滤掉地面(0m)和天花板(>2.5m)
+            min_height: 0.5
+            max_height: 1.5
+
+            # === 角度范围 (Mid-360 是全向的) ===
+            angle_min: -3.1415926 # -180度
+            angle_max: 3.1415926  # +180度
+            angle_increment: 0.0087 # 分辨率 (约0.5度)
+
+            # === 扫描与处理 ===
+            scan_time: 0.1        # 10Hz 输出频率
+            range_min: 0.45       # 盲区过滤：Mid-360 近处可能有噪点或机身遮挡，建议设为 0.45
+            range_max: 20.0       # 最大距离
+
+            use_inf: true         # 超过距离补无穷大
+            
+            # 并发线程数：设为 1 即可，设 0 会用尽 CPU
+            concurrency_level: 1
+        </rosparam>
+    </node>
+</launch>
