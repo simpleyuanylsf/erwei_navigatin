@@ -1,10 +1,11 @@
-# 将cmd_vel话题转换到mavros进行控制
+# mid360二维自主避障并将cmd_vel话题转换到mavros进行控制
 
 加了gmapping导航效果不好，所以最后取消使用 只使用了全局代价地图和局部代价地图 导航效果待更新
 
 ## 环境条件
 
-要先安装gmapping和navigation
+要先安装gmapping和navigation 还有explore_lite 
+mid360的包和livox_ros_driver自行安装
 
 ```
 # 更新软件包索引
